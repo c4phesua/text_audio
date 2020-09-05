@@ -19,8 +19,11 @@ class TextAudio(Ui_MainWindow, QtWidgets.QMainWindow):
         self.playlist = QtMultimedia.QMediaPlaylist()
         self.player.setPlaylist(self.playlist)
         self.recorder = QtMultimedia.QAudioRecorder()
+        self.recorder.audioSettings().setCodec('audio/pcm')
+        self.recorder.setContainerFormat('wav')
         self.recorder.audioSettings().setQuality(QtMultimedia.QMultimedia.HighQuality)
-        self.recorder.setOutputLocation(QtCore.QUrl.fromLocalFile('record.mp3'))
+        self.recorder.setOutputLocation(QtCore.QUrl.fromLocalFile('./record.wav'))
+        self.record_button.clicked.connect(self.record_event)
 
     def get_voice_info(self):
         response = requests.get(self.VOICE_INFO_URL)
@@ -47,3 +50,12 @@ class TextAudio(Ui_MainWindow, QtWidgets.QMainWindow):
         self.playlist.addMedia(content)
         self.player.setVolume(self.volum_slider.value())
         self.player.play()
+
+    @QtCore.pyqtSlot()
+    def record_event(self):
+        if self.recorder.state() == QtMultimedia.QMediaRecorder.StoppedState:
+            self.recorder.record()
+            self.record_button.setText('Dừng')
+        else:
+            self.recorder.stop()
+            self.record_button.setText('Thu âm')
