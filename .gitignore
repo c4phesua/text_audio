@@ -219,3 +219,4 @@ fabric.properties
 .idea/misc.xml
 .idea/modules.xml
 .idea/text_audio.iml
+bin/test.py
